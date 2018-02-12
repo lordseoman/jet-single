@@ -1,0 +1,2 @@
+deb http://archive.debian.org/debian/ squeeze main contrib non-free
+deb http://archive.debian.org/debian/ squeeze-proposed-updates main contrib non-free
