@@ -23,7 +23,7 @@ COPY skel/.vimrc /root/
 COPY skel/.screenrc /root/
 
 RUN mkdir /root/eggs && mkdir /root/bin
-COPY eggs/ /root/eggs/
+COPY jet-conf/eggs/ /root/eggs/
 
 # Create the jet user before install the `jet` package so we control the UID
 ENV HOME /home/jet
