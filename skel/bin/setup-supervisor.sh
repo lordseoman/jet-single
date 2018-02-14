@@ -9,6 +9,7 @@ if [ ! -e /etc/supervisord.conf ]; then
     mkdir conf.d
     cd conf.d
     ln -s ../jet/modules/reportfe/supervisord.conf reports.conf
+    ln -s ../jet/modules/pylonfe/supervisord.conf pylons.conf
     cd ../
     ln -s jet/local/etc/supervisord/supervisord.conf . 
     cd ../

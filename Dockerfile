@@ -9,12 +9,17 @@ ARG HTTPS_PROXY
 ARG TIMEZONE
 ARG DF_VOLUMES
 ARG DF_PORTS
-ARG REALM
-ARG MACHINE
-ARG SCRIPTARGS
+ARG CLIENT
+ARG SERVERNAME
+ARG IP
+ARG FQDN
 
 ENV http_proxy ${HTTP_PROXY:-}
 ENV https_proxy ${HTTPS_PROXY:-}
+ENV CLIENT ${CLIENT:-}
+ENV SERVERNAME ${SERVERNAME:-}
+ENV IP ${IP:-}
+ENV FQDN ${FQDN:-}
 
 COPY jet-conf/obsidian.list /etc/apt/sources.list.d/
 COPY jet-conf/debian.list /etc/apt/sources.list
@@ -32,14 +37,22 @@ RUN useradd --create-home --home-dir $HOME --shell /bin/bash --uid 1001 jet
 RUN apt-get clean \
   && apt-get update \
   && apt-get install --yes --force-yes libc6=2.11.3-4 libc6-dev=2.11.3-4 libc-bin=2.11.3-4 net-tools \
-  && apt-get install --yes --force-yes --no-install-recommends libc-dev libmysqlclient-dev zlib1g-dev libtool python2.6-dev wget vim acl jet \
+  && apt-get install --yes --force-yes --no-install-recommends libc-dev libmysqlclient-dev zlib1g-dev libtool python2.6-dev wget vim acl \
   && apt-get install --yes openssh-client openssh-server sshpass \
-  && easy-install $HOME/eggs/elementtree-1.2.7-20070827-preview.zip \
-  && easy-install $HOME/eggs/python-openid-1.2.0.zip \
-  && easy-install $HOME/eggs/python-urljr-1.0.1.tar.gz \
-  && easy-install $HOME/eggs/python-yadis-1.1.0.tar.gz \
-  && easy-install $HOME/eggs/AuthKit-0.4.0.tar.gz \
-  && easy-install pexpect
+  && apt-get install --yes --no-install-recommends python-setuptools 
+
+RUN apt-get install --yes --no-install-recommends build-essential gcc make pkg-config autoconf automake locate \
+  && apt-get install --yes --force-yes --no-install-recommends jet \
+  && /usr/local/bin/easy_install /root/eggs/elementtree-1.2.7-20070827-preview.zip \
+  && /usr/local/bin/easy_install /root/eggs/python-openid-1.2.0.zip \
+  && /usr/local/bin/easy_install /root/eggs/python-urljr-1.0.1.tar.gz \
+  && /usr/local/bin/easy_install /root/eggs/python-yadis-1.1.0.tar.gz \
+  && /usr/local/bin/easy_install /root/eggs/AuthKit-0.4.0.tar.gz \
+  && /usr/local/bin/easy_install pexpect \
+  && pip install requests requests_toolbelt \
+  && apt-get remove --yes build-essential \
+  && apt-get autoremove --yes \
+  && updatedb
 
 # configure sshd to not allow root login
 RUN sed -i 's/^PermitRootLogin/# PermitRootlogin/' /etc/ssh/sshd_config
@@ -50,17 +63,17 @@ RUN rm /etc/localtime \
   && dpkg-reconfigure -f noninteractive tzdata
 
 COPY skel/ $HOME/
-COPY clients/$REALM/id_rsa $HOME/.ssh/
+COPY clients/$CLIENT/id_rsa $HOME/.ssh/
 RUN chown jet:jet -R $HOME && chmod 700 $HOME/.ssh && chmod 600 $HOME/.ssh/id_rsa && chmod 755 $HOME/bin/*
 
 STOPSIGNAL SIGTERM
 
-VOLUME $DF_VOLUMES
+VOLUME ["/opt/Usage", "/opt/Reports", "/opt/Archive"]
 EXPOSE $DF_PORTS
 
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD [""]
+CMD ["start"]
 

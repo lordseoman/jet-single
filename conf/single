@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DF_VOLUMES="['/opt/Usage', '/opt/Reports', '/opt/Archive']"
+DF_VOLUMES=('/opt/Usage', '/opt/Reports', '/opt/Archive')
 DF_PORTS="5000"
 
 RN_VOLUMES="-v /mnt/Usage:/opt/Usage -v /mnt/Reports:/opt/Reports -v /mnt/Archive:/opt/Archive"

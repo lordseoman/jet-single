@@ -7,7 +7,8 @@ case "$1" in
     'start')
         if [ ! -e /home/jet/jet-setup.cf ]; then
             echo "Firt run setup.."
-            sudo -u jet /home/jet/bin/setup-jet.sh
+            sudo -u jet /home/jet/bin/setup-jet.sh ${CLIENT} ${SERVERNAME} ${FQDN} ${IP}
+            sudo -u jet /home/jet/bin/setup-realm.sh ${CLIENT} ${SERVERNAME} ${FQDN} ${IP}
             /home/jet/bin/setup-supervisor.sh
             touch /home/jet/jet-setup.cf
         fi

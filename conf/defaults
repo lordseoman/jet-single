@@ -9,7 +9,7 @@ HTTP_PROXY=
 HTTPS_PROXY=
 
 IP=`hostname -i`
-MACHINE=`hostname -s`
+SERVERNAME=`hostname -s`
 FQDN=`hostname -f`
 
 TIMEZONE=Europe/London

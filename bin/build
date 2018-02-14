@@ -9,7 +9,7 @@
 #
 #######################################################
 
-REALM=$1
+CLIENT=$1
 VER=$2
 MODULE=`cat conf/MODULE`
 
@@ -19,12 +19,12 @@ source conf/build
 
 PROXY="--build-arg HTTP_PROXY=${HTTP_PROXY} --build-arg HTTPS_PROXY=${HTTPS_PROXY}"
 B1ARGS=(--build-arg DF_VOLUMES="$DF_VOLUMES" --build-arg DF_PORTS="$DF_PORTS")
-B2ARGS="--build-arg REALM=$REALM --build-arg MACHINE=$MACHINE --build-arg TIMEZONE=$TIMEZONE"
-B3ARGS=(--build-arg SCRIPTARGS="$IP $MACHINE")
+B2ARGS="--build-arg CLIENT=$CLIENT --build-arg TIMEZONE=$TIMEZONE"
+B3ARGS="--build-arg IP=$IP --build-arg SERVERNAME=$SERVERNAME --build-arg FQDN=$FQDN"
 
-ARGS="${B1ARGS[@]} ${B2ARGS} "${B3ARGS[@]}" ${PROXY} ${EXARGS}"
+ARGS="${B1ARGS[@]} ${B2ARGS} ${B3ARGS} ${PROXY} ${EXARGS}"
 
 CMD="docker build --rm -t jet-${MODULE}:latest -t jet-${MODULE}:${VER}"
 
-exec $CMD "${B1ARGS[@]}" ${B2ARGS} ${PROXY} ${EXARGS} .
+exec $CMD "${B1ARGS[@]}" ${B2ARGS} ${PROXY} ${EXARGS} ${B3ARGS} .
 
